@@ -1,0 +1,50 @@
+event_inherited();
+
+if !global.frozen and !dead {
+    if instance_exists(prtPlayer) {
+        if x < prtPlayer.x
+            image_xscale = 1;
+        else
+            image_xscale = -1;
+        
+        // If this Gabyoall and Mega Man are on the same height, have the Gabyoall start dashing.
+        if abs(y - (prtPlayer.y - prtPlayer.sprite_yoffset + prtPlayer.sprite_height)) < 4
+            dashing = true;
+        else
+            dashing = false;
+    }
+    
+    if dashing
+        xspeed = startDir * 2;
+    else
+        xspeed = startDir * 0.5;
+        
+    generalCollision();
+    
+    if floor(frozeTimer) == 0 {
+        frozeTimer = 0;    
+        image_speed = 0.2 * update_rate;
+    
+        if (xspeed == 0 || 
+            !collision_rectangle(x+(startDir*8), y, x+(startDir*8), y+1, objSolid, false, false)) {
+            startDir = -startDir;   //Change the direction
+        }
+        
+    }
+    else {
+        image_speed = 0;
+        xspeed = 0;
+        frozeTimer -= update_rate;
+    }
+}
+else {
+    xspeed = 0;
+    yspeed = 0;
+
+    if dead {
+        startDir = beginStartDir;
+        dashing = false;
+        frozeTimer = 0;
+        image_index = 0;
+    }
+}

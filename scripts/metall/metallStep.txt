@@ -1,0 +1,69 @@
+event_inherited();
+
+if !global.frozen and !dead {
+
+    checkGround();
+    gravityCheckGround();
+    generalCollision();
+        
+    if instance_exists(prtPlayer) {
+        if x < prtPlayer.x
+            image_xscale = 1;
+        else
+            image_xscale = -1;
+        
+        if distance_to_object(prtPlayer) <= radius {
+            if canShoot {
+                canShoot = false;
+                image_index = 1;
+            }
+        }
+    }
+    
+    if !canShoot {
+        cooldownTimer += update_rate;
+        
+        if floor(cooldownTimer) == 17 {
+            cooldownTimer = 18;
+            //Shoot
+            var ID = instance_create(x+image_xscale*8, sprite_get_ycenter(), objBullet);
+            ID.dir = 45;
+            ID.xscale = image_xscale;
+
+            ID = instance_create(x+image_xscale*8, sprite_get_ycenter(), objBullet);
+            ID.dir = 0;
+            ID.xscale = image_xscale;
+
+            ID = instance_create(x+image_xscale*8, sprite_get_ycenter(), objBullet);
+            ID.dir = -45;
+            ID.xscale = image_xscale;
+            
+            playSFX(sfxEnemyShootClassic);
+        }
+        else if floor(cooldownTimer) == 30 {
+            image_index = 0;
+        }
+        else if floor(cooldownTimer) >= 80 {
+            canShoot = true;
+            cooldownTimer = 0;
+        }
+    }
+    
+    //Set the protection of the Met
+    if image_index == 0
+        reflectProjectiles = true;
+    else
+        reflectProjectiles = false;
+        
+    x += xspeed * update_rate;
+    y += yspeed * update_rate;
+}
+else {
+    if dead {
+        cooldownTimer = 0;
+        canShoot = true;
+        image_index = 0;
+    }
+}
+
+

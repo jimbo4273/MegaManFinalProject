@@ -1,0 +1,14 @@
+if sprite_index > -1 and !dead and other.reflectible {
+    with other {
+        var ID = instance_create(x, y, objReflectedProjectile);
+        ID.sprite_index = sprite_index;
+        ID.image_index = 0;//image_index;
+        ID.image_speed = 0;//image_speed;
+        ID.image_xscale = image_xscale;
+        ID.dir = sign(xspeed);
+            
+        instance_destroy();
+    }
+    
+    playSFX(sfxReflect);
+}
